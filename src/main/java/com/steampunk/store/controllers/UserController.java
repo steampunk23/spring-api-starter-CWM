@@ -55,7 +55,7 @@ public class UserController {
     ) {
         if (userRepository.existsByEmail(request.getEmail())) {
             return ResponseEntity.badRequest().body(
-                    Map.of("email", "Email is already registered.")
+                    Map.of("email", "Email is already registered")
             );
         }
 
