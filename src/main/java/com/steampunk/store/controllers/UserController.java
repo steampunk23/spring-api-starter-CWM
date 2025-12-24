@@ -4,6 +4,7 @@ import com.steampunk.store.dtos.ChangePasswordRequest;
 import com.steampunk.store.dtos.RegisterUserRequest;
 import com.steampunk.store.dtos.UpdateUserRequest;
 import com.steampunk.store.dtos.UserDto;
+import com.steampunk.store.entities.Role;
 import com.steampunk.store.mappers.UserMapper;
 import com.steampunk.store.repositories.UserRepository;
 import jakarta.validation.Valid;
@@ -63,6 +64,7 @@ public class UserController {
 
         var user = userMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(Role.USER);
         userRepository.save(user);
 
         var userDto = userMapper.toDto(user);
