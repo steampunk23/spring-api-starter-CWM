@@ -2,6 +2,7 @@ package com.steampunk.store.controllers;
 
 import com.steampunk.store.dtos.CheckoutRequest;
 import com.steampunk.store.dtos.CheckoutResponse;
+import com.steampunk.store.dtos.ErrorDto;
 import com.steampunk.store.entities.Order;
 import com.steampunk.store.entities.OrderItem;
 import com.steampunk.store.entities.OrderStatus;
@@ -35,13 +36,13 @@ public class CheckoutController {
         var cart = cartRepository.getCartWithItems(request.getCartId()).orElse(null);
         if (cart == null) {
             return ResponseEntity.badRequest().body(
-                    Map.of("error", "Cart not found")
+                    new ErrorDto("Cart not found")
             );
         }
 
         if (cart.getItems().isEmpty()) {
             return ResponseEntity.badRequest().body(
-                    Map.of("error", "Cart is empty")
+                    new ErrorDto("Cart is empty")
             );
         }
 
