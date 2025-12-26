@@ -8,11 +8,16 @@ import com.steampunk.store.exceptions.CartEmptyException;
 import com.steampunk.store.exceptions.CartNotFoundException;
 import com.steampunk.store.repositories.CartRepository;
 import com.steampunk.store.repositories.OrderRepository;
+import com.stripe.exception.StripeException;
+import com.stripe.model.checkout.Session;
+import com.stripe.param.checkout.SessionCreateParams;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class CheckoutService {
     private final CartRepository cartRepository;
@@ -20,7 +25,10 @@ public class CheckoutService {
     private final AuthService authService;
     private final CartService cartService;
 
-    public CheckoutResponse checkout(CheckoutRequest request) {
+    @Value("${websiteUrl}")
+    private String websiteUrl;
+
+    public CheckoutResponse checkout(CheckoutRequest request) throws StripeException {
         var cart = cartRepository.getCartWithItems(request.getCartId()).orElse(null);
         if (cart == null) {
             throw new CartNotFoundException();
@@ -34,8 +42,35 @@ public class CheckoutService {
 
         orderRepository.save(order);
 
+        // Create a checkout session
+        var builder = SessionCreateParams.builder()
+                        .setMode(SessionCreateParams.Mode.PAYMENT)
+                        .setSuccessUrl(websiteUrl + "/checkout-success?order_id=" + order.getId())
+                        .setCancelUrl(websiteUrl + "/chekcout-cancel");
+
+        order.getItems().forEach(item -> {
+            var lineItem = SessionCreateParams.LineItem.builder()
+                    .setQuantity(Long.valueOf(item.getQuantity()))
+                    .setPriceData(
+                            SessionCreateParams.LineItem.PriceData.builder()
+                                    .setCurrency("usd")
+                                    .setUnitAmountDecimal(item.getUnitPrice())
+                                    .setProductData(
+                                            SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                                    .setName(item.getProduct().getName())
+                                                    .build()
+                                    )
+                                    .build()
+                    )
+                    .build();
+            builder.addLineItem(lineItem);
+        });
+
+        var session = Session.create(builder.build());
+
+
         cartService.clearCart(cart.getId());
 
-        return  new  CheckoutResponse(order.getId());
+        return  new  CheckoutResponse(order.getId(), session.getUrl());
     }
 }
