@@ -1,4 +1,4 @@
-package com.steampunk.store.services;
+package com.steampunk.store.payments;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

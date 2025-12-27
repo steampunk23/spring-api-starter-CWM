@@ -1,4 +1,4 @@
-package com.steampunk.store.dtos;
+package com.steampunk.store.payments;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

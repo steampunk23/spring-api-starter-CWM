@@ -1,4 +1,4 @@
-package com.steampunk.store.config;
+package com.steampunk.store.payments;
 
 import com.stripe.Stripe;
 import jakarta.annotation.PostConstruct;

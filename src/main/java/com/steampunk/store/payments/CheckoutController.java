@@ -1,17 +1,11 @@
-package com.steampunk.store.controllers;
+package com.steampunk.store.payments;
 
-import com.steampunk.store.dtos.CheckoutRequest;
-import com.steampunk.store.dtos.CheckoutResponse;
 import com.steampunk.store.dtos.ErrorDto;
 import com.steampunk.store.exceptions.CartEmptyException;
 import com.steampunk.store.exceptions.CartNotFoundException;
-import com.steampunk.store.exceptions.PaymentException;
 import com.steampunk.store.repositories.OrderRepository;
-import com.steampunk.store.services.CheckoutService;
-import com.steampunk.store.services.WebhookRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

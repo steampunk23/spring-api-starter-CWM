@@ -1,4 +1,4 @@
-package com.steampunk.store.services;
+package com.steampunk.store.payments;
 
 import com.steampunk.store.entities.PaymentStatus;
 import lombok.AllArgsConstructor;

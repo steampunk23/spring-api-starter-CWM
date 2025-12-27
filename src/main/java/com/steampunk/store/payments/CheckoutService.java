@@ -1,13 +1,12 @@
-package com.steampunk.store.services;
+package com.steampunk.store.payments;
 
-import com.steampunk.store.dtos.CheckoutRequest;
-import com.steampunk.store.dtos.CheckoutResponse;
 import com.steampunk.store.entities.Order;
 import com.steampunk.store.exceptions.CartEmptyException;
 import com.steampunk.store.exceptions.CartNotFoundException;
-import com.steampunk.store.exceptions.PaymentException;
 import com.steampunk.store.repositories.CartRepository;
 import com.steampunk.store.repositories.OrderRepository;
+import com.steampunk.store.services.AuthService;
+import com.steampunk.store.services.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

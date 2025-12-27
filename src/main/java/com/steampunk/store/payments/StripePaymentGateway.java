@@ -1,9 +1,8 @@
-package com.steampunk.store.services;
+package com.steampunk.store.payments;
 
 import com.steampunk.store.entities.Order;
 import com.steampunk.store.entities.OrderItem;
 import com.steampunk.store.entities.PaymentStatus;
-import com.steampunk.store.exceptions.PaymentException;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;

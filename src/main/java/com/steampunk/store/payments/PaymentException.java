@@ -1,4 +1,4 @@
-package com.steampunk.store.exceptions;
+package com.steampunk.store.payments;
 
 import lombok.NoArgsConstructor;
 
