@@ -3,14 +3,16 @@ package com.steampunk.store.controllers;
 import com.steampunk.store.dtos.CheckoutRequest;
 import com.steampunk.store.dtos.CheckoutResponse;
 import com.steampunk.store.dtos.ErrorDto;
+import com.steampunk.store.entities.OrderStatus;
 import com.steampunk.store.exceptions.CartEmptyException;
 import com.steampunk.store.exceptions.CartNotFoundException;
 import com.steampunk.store.exceptions.PaymentException;
+import com.steampunk.store.repositories.OrderRepository;
 import com.steampunk.store.services.CheckoutService;
 import com.stripe.exception.SignatureVerificationException;
+import com.stripe.model.PaymentIntent;
 import com.stripe.net.Webhook;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/checkout")
 public class CheckoutController {
     private final CheckoutService checkoutService;
+    private final OrderRepository orderRepository;
 
     @Value("${stripe.webhookSecretKey}")
     private String webhookSecretKey;
@@ -44,7 +47,14 @@ public class CheckoutController {
 
             switch (event.getType()) {
                 case "payment-intent.succeeded" -> {
-                    // Update order status (PAID)
+                    var paymentIntent = (PaymentIntent) stripeObject;
+                    if (paymentIntent != null) {
+                        var orderId = paymentIntent.getMetadata().get("order_id");
+                        var order = orderRepository.findById(Long.valueOf(orderId)).orElseThrow();
+                        order.setStatus(OrderStatus.PAID);
+                        orderRepository.save(order);
+                    }
+
                 }
                 case "payment-intent.failed" -> {
                     // Update order status (FAILED)
